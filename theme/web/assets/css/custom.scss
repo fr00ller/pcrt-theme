@@ -1,0 +1,31 @@
+.pcrt-header {
+  position: relative;
+  max-height: 100px;
+  z-index: 1030;
+  background-color: #CCC;
+}
+.pcrt-sidebar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding-top: 50px;
+    min-height: 100%;
+    width: $navbar-open;
+    z-index: 810;
+    transition: width .3s ease-in-out;
+    background-color: #111;
+
+    &.pcrt-close{
+      width: $navbar-close!important;
+    }
+}
+
+.pcrt-wrapper{
+  margin-left: $navbar-open;
+  background-color: red;
+  transition: margin-left 0.3s ease-in-out;
+
+  &.pcrt-close{
+    margin-left: $navbar-close!important;
+  }
+}

@@ -1,31 +1,11 @@
-.pcrt-header {
-  position: relative;
-  max-height: 100px;
-  z-index: 1030;
-  background-color: #CCC;
-}
-.pcrt-sidebar {
-    position: absolute;
-    top: 0;
-    left: 0;
-    padding-top: 50px;
-    min-height: 100%;
-    width: $navbar-open;
-    z-index: 810;
-    transition: width .3s ease-in-out;
-    background-color: #111;
-    
-    &.pcrt-close{
-      width: $navbar-close!important;
-    } 
-}
+@import 'variable.scss';
 
-.pcrt-wrapper{
-  margin-left: $navbar-open;
-  background-color: red;
-  transition: margin-left 0.3s ease-in-out;
-  
-  &.pcrt-close{
-    margin-left: $navbar-close!important;
-  } 
-}
+// Custom CSS to implement personal override
+@import 'custom.scss';
+
+// Original Bootstrap CSS
+@import "../node_modules/bootstrap/scss/bootstrap"; 
+
+// Import Fonts
+@import url('https://fonts.googleapis.com/css?family=Roboto:300,400,700');
+@import url('https://use.fontawesome.com/releases/v5.6.3/css/all.css');
