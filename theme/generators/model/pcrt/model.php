@@ -20,7 +20,7 @@ echo "<?php\n";
 namespace <?= $generator->ns ?>;
 
 use Yii;
-use pcrt/models/ModelFilter;
+use pcrt\behavior\Filterable;
 /**
  * This is the model class for table "<?= $generator->generateTableName($tableName) ?>".
  *
@@ -36,7 +36,17 @@ use pcrt/models/ModelFilter;
  */
 class <?= $className ?> extends <?= '\\' . ltrim($generator->baseClass, '\\') . "\n" ?>
 {
-    use pcrt/models/ModelFilter;
+    public function behaviors()
+    {
+      return [
+        // anonymous behavior, add method getFilter(name=false), setFilter(name,value)
+        [
+          'class' => Filterable::className(),
+          'tablename' => '<?= $generator->generateTableName($tableName) ?>'
+        ]
+
+      ];
+    }
 
     /**
      * {@inheritdoc}
