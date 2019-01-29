@@ -18,7 +18,7 @@ echo "<?php\n";
 ?>
 
 use yii\helpers\Html;
-use yii\widgets\ActiveForm;
+use yii\bootstrap\ActiveForm;
 <?php if(count($foreignKeys) !== 0) : ?>
 use pcrt\widgets\Select2;
 use yii\web\JsExpression;
@@ -32,7 +32,22 @@ use yii\web\JsExpression;
 
 <div class="<?= Inflector::camel2id(StringHelper::basename($generator->modelClass)) ?>-form">
 
-    <?= "<?php " ?>$form = ActiveForm::begin(); ?>
+    <?= "<?php " ?>$form = ActiveForm::begin(
+          [
+            // TODO : Setting the form property
+            /*'layout' => 'horizontal',
+            'fieldConfig' => [
+                'template' => "{label}\n{beginWrapper}\n{input}\n{hint}\n{error}\n{endWrapper}",
+                'horizontalCssClasses' => [
+                    'label' => 'col-sm-4',
+                    'offset' => 'offset-sm-4',
+                    'wrapper' => 'col-sm-8',
+                    'error' => '',
+                    'hint' => '',
+                ],
+            ],*/
+          ]
+    ); ?>
 
 <?php foreach ($generator->getColumnNames() as $attribute) {
     if (in_array($attribute, $safeAttributes)) {
