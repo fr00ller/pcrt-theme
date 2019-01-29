@@ -80,7 +80,7 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
       // TODO: Adjust a text filed to mach correct field lookup
       // Adjust a query filter column to match your need
       // Also possible to add an additional filter to query
-
+      \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
       $query = (new \yii\db\Query())
         ->select(['<?= $key['fk_field'] ?> as id', 'description as text'])
         ->from('<?= $key['fk_table'] ?>')
