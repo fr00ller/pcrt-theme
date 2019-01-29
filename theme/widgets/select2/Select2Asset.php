@@ -1,6 +1,6 @@
 <?php
 
-namespace pcrt\widget\select2;
+namespace pcrt\widgets;
 
 use yii\web\AssetBundle;
 

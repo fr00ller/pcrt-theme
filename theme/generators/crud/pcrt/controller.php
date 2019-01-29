@@ -17,6 +17,7 @@ if ($modelClass === $searchModelClass) {
     $searchModelAlias = $searchModelClass . 'Search';
 }
 
+$foreignKeys = $generator->getForeignKeys();
 /* @var $class ActiveRecordInterface */
 $class = $generator->modelClass;
 $pks = $class::primaryKey();
@@ -40,6 +41,9 @@ use <?= ltrim($generator->baseControllerClass, '\\') ?>;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
+<?php if (count($foreignKeys) !== 0) : ?>
+use pcrt\behavior\Lookable;
+<?php endif; ?>
 /**
  * <?= $controllerClass ?> implements the CRUD actions for <?= $modelClass ?> model.
  */
@@ -51,14 +55,41 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
     public function behaviors()
     {
         return [
+<?php if(count($foreignKeys) !== 0) : ?>
+            Lookable::::className(),
+<?php endif; ?>
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['POST'],
+<?php if(count($foreignKeys) !== 0) : ?>
+<?php foreach($foreignKeys as $key): ?>
+                    'get-<?=lcfirst($key['fk_table'])?>' => ['POST'],
+<?php endforeach; ?>
+<?php endif; ?>
                 ],
             ],
         ];
     }
+
+    <?php foreach($foreignKeys as $key): ?>
+
+    public function actionGet<?=ucfirst($key['fk_table'])?>($query,$page)
+    {
+
+      // TODO: Adjust a text filed to mach correct field lookup
+      // Adjust a query filter column to match your need
+      // Also possible to add an additional filter to query
+
+      $query = (new \yii\db\Query())
+        ->select(['<?= $key['fk_field'] ?> as id', 'description as text'])
+        ->from('<?= $key['fk_table'] ?>')
+        ->where(['description' => $query]);
+      return $this->getTableList($query,20,$page-1);
+
+    }
+
+    <?php endforeach; ?>
 
     public function actionIndex()
     {
@@ -81,7 +112,7 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
 <?php endif; ?>
     }
 
-    
+
 
     public function actionCreate()
     {

@@ -8,6 +8,7 @@ use yii\helpers\StringHelper;
 
 /* @var $model \yii\db\ActiveRecord */
 $model = new $generator->modelClass();
+$foreignKeys = $generator->getForeignKeys();
 $safeAttributes = $model->safeAttributes();
 if (empty($safeAttributes)) {
     $safeAttributes = $model->attributes();
@@ -18,6 +19,11 @@ echo "<?php\n";
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+<?php if(count($foreignKeys) !== 0) : ?>
+use pcrt\widgets\Select2;
+use yii\web\JsExpression;
+<?php endif; ?>
+
 
 /* @var $this yii\web\View */
 /* @var $model <?= ltrim($generator->modelClass, '\\') ?> */

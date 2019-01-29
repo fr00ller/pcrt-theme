@@ -15,12 +15,65 @@ use yii\web\Controller;
 
 class Generator extends \yii\gii\generators\crud\Generator
 {
-  
-  private function generateSelect2ActiveField($attribute)
+  public function getName()
   {
-    
+      return 'PCRT CRUD Generator';
   }
-  
+  /**
+   * {@inheritdoc}
+   */
+  public function getDescription()
+  {
+      return 'This generator generates an ActiveRecord class for the specified database table with PCRT customization.';
+  }
+
+  private function generateSelect2ActiveField($table, $column, $fktable)
+  {
+    return "\$form->field(\$model, '$column->name')->widget(
+        Select2::class,
+        [
+            'items' => [],
+            'clientOptions' => [
+              'ajax' => [
+                'url' => 'index.php?r=$table->name/get-$fktable',
+                'data' => new JsExpression('function (params) {
+                    var query = {
+                      query: params.term,
+                      page: params.page || 0
+                    }
+                    return query;
+                  }'),
+                'dataType' => 'json'
+              ]
+            ]
+        ]
+    );";
+  }
+
+  // TODO: Need Improve for multicolumn FK ???
+  public function getForeignKeys(){
+    $FK = [];
+    $tableSchema = $this->getTableSchema();
+    if ($tableSchema !== false) {
+      $fk = $tableSchema->foreignKeys;
+      foreach($fk as $f){
+        $fk = [];
+        $fk['table'] = $tableSchema->name;
+        foreach ($f as $key => $val) {
+          if($key === 0){
+            $fk['fk_table'] = $val;
+          }else{
+            $fk['fk_field'] = $val;
+            $fk['field'] = $key;
+          }
+        }
+        $FK[] = $fk;
+      }
+    }
+    \Yii::trace($FK);
+    return $FK;
+  }
+
   public function generateActiveField($attribute)
   {
       $tableSchema = $this->getTableSchema();
@@ -30,24 +83,17 @@ class Generator extends \yii\gii\generators\crud\Generator
           }
           return "\$form->field(\$model, '$attribute')";
       }
+
       $column = $tableSchema->columns[$attribute];
-      $fk = $tableSchema->foreignKeys;
-      \Yii::trace($tableSchema);
-      \Yii::trace($fk);
-      \Yii::trace($column);
-      
+      $fk = $this->getForeignKeys();
       foreach($fk as $f){
-        foreach ($f as $key => $val) {
-          \Yii::trace("KEY is ".$key);
-          \Yii::trace("CNAME is ".$column->name);
-          if($key !== 0 && $key == $column->name){
-            \Yii::trace($column->name . " is a foreignKey!");
-          }
+        if($f['field']==$column->name){
+          return $this->generateSelect2ActiveField($tableSchema,$column,$f['fk_table']);
         }
       }
-      
-      parent::generateActiveField($attribute);
+
+      return parent::generateActiveField($attribute);
   }
-  
-  
+
+
 }
